@@ -35,15 +35,7 @@ stages:
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
         tags: '$(tag)'
-    
-    - task: ContainerStructureTest@0
-      displayName: Structure tests
-      inputs:
-        dockerRegistryServiceConnection: '15c52e0b-9594-44e9-b10e-eb41c44a673f'
-        repository: '$(imageRepository)'
-        configFile: 'self/ContainerStructureTests.yml'
-        testRunTitle: 'CST'
-        failTaskOnFailedTests: false
+
     - task: Docker@2
       displayName: Push to registry
       inputs:
