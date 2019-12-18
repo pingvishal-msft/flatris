@@ -53,7 +53,7 @@ stages:
               namespace: 'qa'
               command: 'apply'
               useConfigurationFile: true
-              configuration: '$(Build.SourcesDirectory)/Application/deployment.yaml'
+              configuration: '$(Build.StagingDirectory)/Application/deployment.yaml'
               secretType: 'dockerRegistry'
               containerRegistryType: 'Azure Container Registry'
               azureSubscriptionEndpointForSecrets: 'RMPM (afc11291-9826-46be-b852-70349146ddf8)'
