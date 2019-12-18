@@ -13,6 +13,7 @@ variables:
   imageRepository: 'flatris'
   containerRegistry: 'vishal.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Application/Dockerfile'
+  manifestPath: '$(Pipeline.workspace)/manifests/deployment.yaml'
   tag: '$(Build.BuildId)'
   
   # Agent VM image name
@@ -36,6 +37,10 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+
+    - publish: $(Build.SourcesDirectory)/Application/deployment.yaml
+      artifact: manifests
+        
 - stage: QA
   displayName: Deploy to QA
   jobs:
@@ -53,7 +58,7 @@ stages:
               namespace: 'qa'
               command: 'apply'
               useConfigurationFile: true
-              configuration: '$(Build.StagingDirectory)/Application/deployment.yaml'
+              configuration: '$(manifestPath)'
               secretType: 'dockerRegistry'
               containerRegistryType: 'Azure Container Registry'
               azureSubscriptionEndpointForSecrets: 'RMPM (afc11291-9826-46be-b852-70349146ddf8)'
