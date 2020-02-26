@@ -36,6 +36,17 @@ stages:
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
         tags: '$(tag)'
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: |
+          # install anchore-cli
+          
+          sudo apt-get update
+          sudo apt-get install python-pip
+          pip install --user --upgrade anchorecli
+          
+          export PATH="$HOME/.local/bin/:$PATH"
     - task: AnchoreTask@1
       inputs:
         engineUrl: 'http://52.173.29.137:8228/v1'
