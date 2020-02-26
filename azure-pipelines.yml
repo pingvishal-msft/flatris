@@ -23,40 +23,37 @@ stages:
 - stage: Build
   displayName: Build and push stage
   jobs:  
-  - deployment: Build
+  - job: Build
     displayName: Build
-    environment: 
-      name: testdg
-      resourceType: VirtualMachine
-    strategy:
-      runOnce:
-        
-        deploy:
-          steps:
-            - task: Docker@2
-              displayName: Build and push an image to container registry
-              inputs:
-                containerRegistry: 'flatris-serviceconn'
-                repository: '$(imageRepository)'
-                command: 'buildAndPush'
-                Dockerfile: '**/Dockerfile'
-                tags: '$(tag)'
-            - task: Bash@3
-              inputs:
-                targetType: 'inline'
-                script: |
-                  # install anchore-cli
-                  
-                  sudo apt-get update
-                  sudo apt-get install python-pip
-                  pip install --user --upgrade anchorecli
-                  
-                  export PATH="$HOME/.local/bin/:$PATH"
-            - task: AnchoreTask@1
-              inputs:
-                engineUrl: 'http://52.173.29.137:8228/v1'
-                engineUser: 'admin'
-                enginePassword: 'foobar'
-                imageName: '$(containerRegistry)/$(imageRepository):$(tag)'
-                doVulnScan: true
-        
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        containerRegistry: 'flatris-serviceconn'
+        repository: '$(imageRepository)'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: '$(tag)'
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: |
+          # install anchore-cli
+          
+          sudo apt-get update
+          sudo apt-get install python-pip -y
+          pip install --user --upgrade anchorecli
+          
+          export PATH="$HOME/.local/bin/:$PATH"
+    - task: AnchoreTask@1
+      inputs:
+        engineUrl: 'http://52.173.29.137:8228/v1'
+        engineUser: 'admin'
+        enginePassword: 'foobar'
+        imageName: '$(containerRegistry)/$(imageRepository):$(tag)'
+        doVulnScan: true
+
+    - publish: $(Build.SourcesDirectory)/Application/deployment.yaml
+      artifact: manifests
