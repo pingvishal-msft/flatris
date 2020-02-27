@@ -43,8 +43,8 @@ stages:
           # install anchore-cli
           
           sudo apt-get update
-          sudo pip install wheel -y
           sudo apt-get install python-pip -y
+          pip install wheel
           pip install --user --upgrade anchorecli
           
           export PATH="$HOME/.local/bin/:$PATH"
