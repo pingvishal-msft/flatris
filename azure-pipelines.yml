@@ -43,6 +43,7 @@ stages:
           # install anchore-cli
           
           sudo apt-get update
+          sudo pip install wheel -y
           sudo apt-get install python-pip -y
           pip install --user --upgrade anchorecli
           
