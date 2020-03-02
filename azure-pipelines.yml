@@ -47,8 +47,8 @@ stages:
           pip install wheel
           pip install --user --upgrade anchorecli
           
-          export PATH="$HOME/.local/bin/:$PATH"
-          anchore-cli --help
+          NEWPATH="$HOME/.local/bin/:$PATH"
+          echo "##vso[task.setvariable variable=PATH;]$NEWPATH"
     - task: AnchoreTask@1
       inputs:
         engineUrl: 'http://52.173.29.137:8228/v1'
